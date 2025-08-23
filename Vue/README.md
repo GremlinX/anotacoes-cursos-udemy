@@ -129,3 +129,141 @@ export default {
 }
 </script>
 ```
+
+## Provide + Inject
+
+Algo que pode ser muito comum em projetos Vue é o `prop drilling` ou repassar informações de componentes para componentes. Ou seja, uma infomação que está, por exemplo, no componente raiz, precisa passar por um Componente A até chegar num Componente B ao qual de fato precisa.
+
+`Provide` e `Inject` está aí para isso! Remover essa necessidade de passar informações para componentes intermediários e fazer uma comunicação direta.
+
+### Exemplo 1
+```js
+// ParentComponent.vue
+<script setup>
+import { provide } from 'vue'
+import ChildComponent from './ChildComponent.vue'
+
+provide('message', 'Hello from ParentComponent')
+
+</script>
+
+<template>
+  <div>
+    <child-component />
+  </div>
+</template>
+```
+
+```js
+//ChildComponent.vue
+<script setup>
+import { inject } from 'vue'
+const injectedMessage = inject('message', 'This is the default message')
+</script>
+
+<template>
+  <div>
+    <p>{{ injectedMessage }}</p>
+  </div>
+</template>
+```
+
+É possível passar vários tipos de dados/informações entre componentes usando `provide` e `inject`. No exemplo a seguir, vamos passar uma função.
+
+O que acontece aqui:
+- O componente pai fornece a função greet usando provide.
+- O componente filho injeta a função com inject('greet').
+- O componente filho chama a função passando o parâmetro desejado e exibe o resultado.
+
+### Exemplo 2
+```js
+// ParentComponent.vue
+<script setup>
+import { provide } from 'vue'
+import ChildComponent from './ChildComponent.vue'
+
+function greet(name) {
+  return `Hello, ${name}!`
+}
+
+provide('greet', greet) // Fornece a função greet
+</script>
+
+<template>
+  <div>
+    <child-component />
+  </div>
+</template>
+```
+
+## Slots
+
+`<slot></slot>` permite que você defina um ponto dentro do template de um componente onde o conteúdo dinâmico será inserido. Em Vue, você usa slots para inserir conteúdo dentro de um componente pai no local que você definir no componente filho.
+
+- Slot: Um slot no Vue é um ponto de inserção de conteúdo dentro de um componente. O conteúdo é injetado pelo componente pai e renderizado no lugar do slot no componente filho.
+- Named Slot: São slots com nome, <ins>permitindo que você insira conteúdo em lugares específicos<ins> do componente filho. O nome do slot é usado para identificar onde o conteúdo deve ser renderizado.
+- Scoped Slots: Ao usar `v-slot`, você pode passar dados do componente filho para o conteúdo do slot.
+
+### Exemplo 1
+```html
+<!-- Componente Pai -->
+<template>
+  <ChildComponent>
+    <p>This is dynamic content passed from parent!</p>
+  </ChildComponent>
+</template>
+
+<script setup>
+import ChildComponent from './ChildComponent.vue';
+</script>
+
+<!-- Componente Filho -->
+<template>
+  <div>
+    <h1>Content from Parent:</h1>
+    <slot></slot>  <!-- O conteúdo passado para o slot será renderizado aqui -->
+  </div>
+</template>
+```
+
+### Exemplo 2
+```html
+<!-- Named slot sem usar "v-slot" -->
+<slot name="header"></slot>
+```
+```html
+<!-- Named slot com "v-slot" -->
+<template v-slot:header>
+  <h1>Header content</h1>
+</template>
+```
+```html
+<template v-slot:header="{ title }">
+  <h1>{{ title }}</h1>
+</template>
+```
+
+### Exemplo 3
+```html
+<!-- Componente Pai -->
+<template>
+  <ChildComponent>
+    <template v-slot:default="{ title, description }">
+      <h1>{{ title }}</h1>
+      <p>{{ description }}</p>
+    </template>
+  </ChildComponent>
+</template>
+
+<!-- Componente Filho -->
+<template>
+  <slot :title="title" :description="description"></slot>  <!-- Passando múltiplos dados -->
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const title = ref('Vue is Awesome!');
+const description = ref('Scoped slots allow passing dynamic data to child content.');
+</script>
+```

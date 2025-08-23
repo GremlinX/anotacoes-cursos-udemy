@@ -74,3 +74,58 @@ OBS.:
 
 > [!WARNING]
 > - No Vue, ao trabalhar com loops (como v-for), é fundamental utilizar a propriedade key. O key serve para atribuir uma identificação única a cada item repetido na lista. Isso permite que o Vue consiga rastrear e identificar com precisão qual item foi alterado ou removido. Como resultado, o Vue pode otimizar o processo de re-renderização, atualizando apenas o item específico que sofreu alteração, em vez de atualizar toda a lista, o que melhora a performance da aplicação.
+
+## Props
+
+Para falar de props precisamos falar sobre **componentes**; São, basicamente, códigos que contém seu html, css e js, e são usados para reaproveitar o código escrito fazendo com que seja renderizado em outras trechos de códigos.
+
+Props é a forma abrevidade de **propriedade** dos componentes, isto é, podemos passar valores de forma dinâmica para os componentes. Em palavras mais técnicas: Props são uma forma de passar dados de um componente pai para um componente filho. Elas permitem que o componente filho receba valores dinâmicos, que podem ser usados em seu template ou lógica interna.
+
+> [!NOTE]
+> - Quando você passa a prop de um componente pai para um componente filho, a convenção no template é usar kebab-case (porque HTML é insensível a maiúsculas e minúsculas).
+> - Já no script, dentro do componente filho, a prop é referenciada em camelCase, pois JavaScript distingue maiúsculas de minúsculas.
+
+### Exemplo:
+
+```html
+<!-- Componente Pai -->
+<meu-componente numero-telefone="123456789"></meu-componente>
+
+// Componente Filho
+export default {
+  props: {
+    numeroTelefone: String
+  }
+}
+```
+
+## Emits (Comunicação Filho para Pai)
+
+No Vue.js, a comunicação filho para pai é feita usando a **emissão de eventos customizados**, onde o componente filho emite um evento e o pai escuta esse evento para executar uma função de callback, como uma forma de enviar dados ou notificar o pai sobre uma ação.
+
+```html
+<!-- Componente Filho -->
+<template>
+  <!-- Usando $emit() para disparar um evento, passando o nome do evento e os dados a ser enviado. -->
+  <button @click="$emit('customEvent', { message: 'Olá do filho!' })">
+    Enviar para Pai
+  </button>
+</template>
+
+<!-- Componente Pai -->
+<template>
+  <!-- Ouvindo o evento emitido pelo filho usando @customEvent -->
+  <!-- e definindo uma função para ser executada, handleChildEvent, quando o evento ocorrer. -->
+  <ChildComponent @customEvent="handleChildEvent" />
+</template>
+
+<script>
+export default {
+  methods: {
+    handleChildEvent(data) {
+      console.log('Mensagem recebida do filho:', data.message);
+    }
+  }
+}
+</script>
+```

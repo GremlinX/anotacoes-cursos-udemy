@@ -267,3 +267,51 @@ const title = ref('Vue is Awesome!');
 const description = ref('Scoped slots allow passing dynamic data to child content.');
 </script>
 ```
+
+## Routes
+
+No Vue.js, o router é uma ferramenta que permite a <ins>navegação entre diferentes URLs<ins> em uma aplicação, possibilitando renderizar componentes específicos conforme a URL solicitada.
+
+Com o Vue Router, podemos <ins>mapear URLs para componentes<ins>, criando rotas para páginas distintas em um projeto. Além disso, é possível utilizar `props` para permitir um **roteamento dinâmico**, passando parâmetros ou dados específicos para os componentes renderizados.
+
+Para utilizar o Vue Router, é necessário instalar a biblioteca `vue-router` e configurá-la corretamente no projeto.
+
+### Exemplo (com configuração)
+
+```js
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from './components/Home.vue';   // exemplo de componente
+import About from './components/About.vue'; // outro componente
+
+Vue.use(Router);
+
+export default new Router({
+  routes: [
+    {
+      path: '/',       // URL da rota
+      name: 'home',    // nome da rota
+      component: Home, // componente que será exibido
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: About,
+    },
+  ],
+});
+```
+Podemos usar o componente próprio do Vue `<router-link>` para criar links de navegação dentro da aplicação.
+```html
+<template>
+  <div>
+    <router-link to="/">Home</router-link>
+    <router-link to="/about">About</router-link>
+    <router-view></router-view>
+  </div>
+</template>
+```
+Podemos fazer redirecionamento programatico também, utilizando o método $router.push():
+```html
+this.$router.push('/about'); // Redireciona para a página /about
+```

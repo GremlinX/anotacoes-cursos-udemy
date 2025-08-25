@@ -1,5 +1,30 @@
 # ANOTAÇÕES SOBRE VUE.JS
 
+1. [Native Event Object](#native-event-object)
+2. [2-Way Binding](#2-way-binding)
+
+   * 2.1 [Comunicação de HTML para JS (v-on)](#comunicação-de-html-para-js-v-on)
+   * 2.2 [Comunicação de JS para HTML (v-bind)](#comunicação-de-js-para-html-v-bind)
+   * 2.3 [2-Way Data Binding (v-model)](#2-way-data-binding-v-model)
+3. [Computed Properties](#computed-properties)
+4. [Watchers](#watchers)
+5. [Renderização Condicional](#renderização-condicional)
+6. [Loop](#loop)
+7. [Props](#props)
+8. [Emits (Comunicação Filho para Pai)](#emits-comunicação-filho-para-pai)
+9. [Provide + Inject](#provide--inject)
+10. [Slots](#slots)
+
+    * 10.1 [Slot Padrão](#slot-padrão)
+    * 10.2 [Named Slot](#named-slot)
+    * 10.3 [Scoped Slot](#scoped-slot)
+11. [Routes](#routes)
+
+    * 11.1 [Exemplo de Configuração de Roteamento](#exemplo-de-configuração-de-roteamento)
+    * 11.2 [Navigation Guards](#navigation-guards)
+
+---
+
 ## Native Event Object
 
 O uso de $ permite que eu tenha acesso ao event. Isso é definido pelo Vue.js.
@@ -301,6 +326,7 @@ export default new Router({
   ],
 });
 ```
+
 Podemos usar o componente próprio do Vue `<router-link>` para criar links de navegação dentro da aplicação.
 ```html
 <template>
@@ -311,7 +337,41 @@ Podemos usar o componente próprio do Vue `<router-link>` para criar links de na
   </div>
 </template>
 ```
+
 Podemos fazer redirecionamento programatico também, utilizando o método $router.push():
 ```html
 this.$router.push('/about'); // Redireciona para a página /about
+```
+
+Outro recurso interessante de routes são **navigation guards**. Esta ferramenta permite criar uma segurança de acesso a rotas através de métodos do vue. Existem 3 tipos de guards:
+1. Global Guards (`beforeEach()`, `afterEach()` e `beforeResolve()`)
+   - Exemplo de uso: Necessidade de fazer login antes de acessar outras telas.
+3. Per-Route Guards (`beforeEnter()`)
+    - Exemplo de uso: Usuário precisa ter a devida autorização de acesso. (Administrador, Convidado, etc)
+5. In-Components Guards (`beforeRouteEnter()`, `beforeRouteUpdate()`, e `beforeRouteLeave()`)
+     - Eles são úteis para lógica mais específica, onde a navegação depende do estado ou do comportamento de um componente em particular. Como por exemplo, confirmar se deseja voltar/avançar navegação antes de salvar alguma informação.
+
+```js
+// Código omitido.
+const routes = [
+  { path: '/', component: Home },
+  { path: '/login', component: Login }
+];
+
+const router = new Router({
+  routes
+});
+
+// Global Guard - antes de cada navegação
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('auth_token'); // Verifica se o usuário está autenticado (simulação simples)
+  
+  // Se a rota não for a página de login e o usuário não estiver autenticado
+  if (to.path !== '/login' && !isAuthenticated) {
+    next('/login'); // Redireciona para a página de login
+  } else {
+    next(); // Ou "next(true). Permite a navegação para a próxima rota
+  }
+});
+// Código omitido.
 ```

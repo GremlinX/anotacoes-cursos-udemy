@@ -375,3 +375,11 @@ router.beforeEach((to, from, next) => {
 });
 // Código omitido.
 ```
+
+## Proxy
+
+O sistema de reatividade do Vue é baseado no `Proxy`, uma funcinalidade nativa do JavaScript.
+
+Isso permite que o Vue atualize automaticamente a interface do usuário (UI).
+
+Em comparação do React, o a UI só será atualizada por meio de uma função de atualização do hook `useState`

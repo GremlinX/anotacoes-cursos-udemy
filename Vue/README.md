@@ -23,7 +23,7 @@
     * 11.1 [Exemplo de Configuração de Roteamento](#exemplo-de-configuração-de-roteamento)
     * 11.2 [Navigation Guards](#navigation-guards)
 
-12. [Proxy](proxy)
+12. [Proxy](#proxy)
 
 ---
 

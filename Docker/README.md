@@ -1,3 +1,10 @@
+# Entendendo Docker
+
+> [!WARNING]
+> Documento em construção
+
+Trata-se de um resumo baseado na minha interpretação, reunindo anotações de pesquisas, estudos e cursos sobre o tema.
+
 ## Visão Geral
 
 ### O que é Docker?
@@ -26,3 +33,88 @@ O Docker serve para contornar esse problema devido aos seus ambientes isolados. 
 - Docker
   - Somenta a instalação da aplicação é feita, o sistema operacional é do próprio computador.
   - Mais rápido e leve.
+
+--- 
+
+## Imagem
+
+Imagens em Docker são como um molde (templates/blueprints) dos containers que serão montados. É a partir de uma Imagem que definimos tudo o que o container precisa para executar, como bibliotecas, dependências, configurações, inclusive o código.
+
+Essas imagens podem ser <ins>construídas manualmente</ins>, ou podem ser adquiridas no [Docker Hub](https://hub.docker.com)
+
+## Container
+
+É um exemplar em execução gerado a partir da imagem - ou seja, uma cópia funcional, viva e isolada daquele ambiente descrito na imagem
+
+## Como construir uma Imagem?
+
+Uma imagem, [como dito anteriormente](#imagem), contém todas as intruções para criá-la. Portanto, para isso, você pode seguir os seguintes passos (usando `Node` como exemplo):
+
+1. Criar o arquivo `Dockerfile`.
+   - Na pasta raiz do projeto, precisaremos criar um arquivo com nome `Dockerfile` (é um nome que será identificado pelo Docker, então não é recomendado variar esse nome).
+   - Esse arquivo contém as instruções necessárias para se criar uma Imagem. `Dockerfile` não é a Imagem! 
+
+2. Inicie com a instrução `FROM`.
+   - Isso permite que você construa sua imagem baseada em outra imagem existente.  
+     O Docker buscará essa imagem no Docker Hub (caso ainda não esteja disponível localmente) e fará o download de uma cópia idêntica para usá-la como base.
+   - Você pode (e deve!) especificar a versão, para evitar problemas com atualizações ou incompatibilidades futuras.
+   - Exemplo: `FROM <nome-da-imagem-base:versão>`
+
+3. Aponte, através do comando `COPY`, quais arquivos locais devem ir para a imagem.
+   - Esse comando espera dois parâmetros: <ins>de onde</ins> e <ins>para onde</ins>.
+   - Exemplo: `COPY . /app`. o primeiro ponto indica que todos os arquivos da pasta raíz deve ser copiado para o diretório `/app` dentro da imagem Docker.
+
+4. Executar a instalação das dependências do projeto com o comando `RUN`.
+   - Antes de executarmos uma aplicação Node.js, é necessário instalar suas dependências usando o comando `npm install` (ou npm i).
+   - No `Dockerfile`, essa instalação também é feita, mas através da instrução `RUN`, que executa comandos durante o processo de build da imagem.
+   - Exemplo: `RUN npm install`
+   - Isso faz com que as dependências sejam instaladas dentro da imagem Docker, no momento da construção da imagem.
+
+> [!NOTE]
+> - No passo 3, mencionei que a minha pasta raiz do meu projeto real deve ser a pasta `/app` da imagem. Portanto, para que a instrução `RUN` faça a instalação das dependências, será necessário apontar para `/app` também.
+> - Portanto, após o comando `FROM`, vamos precisar usar o comando `WORKDIR` para apontar para `/app`.
+> - A partir desse ponto, todos os comandos seguintes (como RUN, CMD, etc.) serão executados dentro de /app.
+
+5. Exponha a porta usada pela aplicação com `EXPOSE`.
+   - A instrução `EXPOSE` informa qual porta a aplicação irá escutar dentro do container.
+   - Em termos mais simples, é como dizer ao Docker: "Ei, quando um container for criado com essa Imagem, a aplicação estará escutando na porta 8080".
+  
+> [!NOTE]
+> - `EXPOSE` sozinho não torna a porta acessível fora do container
+> - Para realmente conseguir acessar sua aplicação fora do container, você precisa mapear a porta usando o comando `docker run` com a flag `-p`.
+> - Mas calma, ainda vamos chegar nessa etapa. É apenas uma nota para se ter informado.
+
+6. Agora, precisamos executar o nosso projeto.
+   - A execução de um projeto node pode variar dependendo do projeto, mas para fins de exemplo, usarei o comando `node server.js`.
+   - Pode parecer que o comando `RUN` sirva aqui, mas na verdade não é esse comando que devemos usar. Isso acontece pois o comando `RUN` faria a execução do projeto na Imagem, mas isso é papel do Container.
+   - De forma mais didática, a instrução `RUN` é usada durante o processo de build da imagem, e executa comandos que geram arquivos dentro da imagem (por exemplo, instalar pacotes ou compilar código).
+   - Portanto, o comando adequado é `CMD`. Isso não fará a execução quando a Imagem for criada <ins>mas sim quando o Container for iniciado.</ins>
+   - E a sintaxe também é diferente, utilizamos um array de argumentos.
+   - Exemplo: `CMD ["node", "server.js"]`
+   
+> [!TIP]
+> A instrução `CMD` não é executada na criação da imagem, mas apenas quando você roda um container a partir dela (por exemplo, com `docker run`).
+
+### Como ficou a Imagem final:
+```dockerfile
+FROM node:18
+
+WORKDIR /app
+
+COPY . /app
+
+RUN npm install
+
+EXPOSE 8080
+
+CMD ["node", "server.js"]
+```
+
+## Como executar um container baseado em uma Imagem personalizada?
+
+[Nesta etapa](#como-construir-uma-imagem) definimos como será a nossa Imagem através de comandos dentro do `Dockerfile`. Agora precisamos criá-la com todas essas intruções. Isso é possível através do comando `docker build <caminho>`.
+
+Após a execução desse comando, o terminal irá lhe indicar um id referente a sua Imagem criada. Use esse id para finalmente executar o container através do comando `docker run <id>`
+
+> [!NOTE]
+> Imagens e Containers não são só isso. Mais a frente terá explicações mais avançadas e detalhadas.

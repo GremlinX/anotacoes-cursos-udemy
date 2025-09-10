@@ -118,3 +118,9 @@ Após a execução desse comando, o terminal irá lhe indicar um id referente a 
 
 > [!NOTE]
 > Imagens e Containers não são só isso. Mais a frente terá explicações mais avançadas e detalhadas.
+
+## Imagens são IMUTÁVEIS (READ-ONLY)❗
+
+Este é um ponto importante do Docker, então vale a pena anotar isso no seu coração.
+
+A Imagem contém seu código e, uma vez construída a imagem (`docker build caminho-da-imagem`), o código copiado não será alterado. Ou seja, o seu código desenvolvido localmente pode ser modificado, até mesmo apagado que a Imagem (e o código que ela copiou) não sofrerá quaisquer alterações.

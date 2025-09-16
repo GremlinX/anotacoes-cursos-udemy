@@ -124,3 +124,21 @@ Após a execução desse comando, o terminal irá lhe indicar um id referente a 
 Este é um ponto importante do Docker, então vale a pena anotar isso no seu coração.
 
 A Imagem contém seu código e, uma vez construída a imagem (`docker build caminho-da-imagem`), o código copiado não será alterado. Ou seja, o seu código desenvolvido localmente pode ser modificado, até mesmo apagado que a Imagem (e o código que ela copiou) não sofrerá quaisquer alterações.
+
+## Image Layers (Camadas)
+
+Uma Imagem no Docker é composta por <ins>camadas</ins>. Cada camada representa uma <ins>instrução</ins> no Dockerfile, ou seja, comandos como `RUN`, `FROM`, `COPY` etc.
+
+Essas camadas são **READ-ONLY** e empilhadas em sequência para formar a Imagem final.
+
+As camadas são "cacheadas", significa que, se não houver uma alteração em uma instrução ou os arquivos envolvidos, o Docker pode reutilizar essas camadas ao invés de recriar quando executar o comando `docker build <caminho>`. O cache acelera a construção da imagem.
+
+## Exemplo
+```dockerfile
+FROM node:18              # Camada 1 - imagem base
+WORKDIR /app              # Camada 2 - define o diretório de trabalho
+COPY . /app               # Camada 3 - copia os arquivos para a imagem
+RUN npm install           # Camada 4 - instala dependências
+EXPOSE 8080               # Camada 5 - expõe a porta 8080
+CMD ["node", "server.js"] # Camada 6 - comando para iniciar a aplicação
+```

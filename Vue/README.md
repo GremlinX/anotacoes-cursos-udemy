@@ -24,6 +24,7 @@
     * 11.2 [Navigation Guards](#navigation-guards)
 
 12. [Proxy](#proxy)
+13. Pinia
 
 ---
 
@@ -385,3 +386,76 @@ O sistema de reatividade do Vue é baseado no `Proxy`, uma funcinalidade nativa 
 Isso permite que o Vue atualize automaticamente a interface do usuário (UI).
 
 Em comparação do React, o a UI só será atualizada por meio de uma função de atualização do hook `useState`
+
+## Pinia
+
+O Pinia é uma biblioteca do Vue 3 que permite **gerenciar os estados**, permitindo que você <ins>compartilhe dados entre todos os componentes</ins> da sua aplicação de forma reativa, com <ins>persistência de dados</ins>.
+
+Ela foi projetada para ser uma alternativa mais simples e moderna ao Vuex, que é o gerenciamento de estado tradicional no Vue 2. O Pinia aproveita as melhorias do Vue 3, como o Composition API, para proporcionar uma experiência de uso mais fluida e fácil de entender.
+
+O Pinia pode ser selecionado para instalação ao criar um projeto Vue 3, mas também é possível fazer isso manualmente através do comando `npm install pinia`.
+
+Para configurar o Pinia, precisamos ir até o arquivo `main.js` ou `main.ts` e escrever o seguinte código para que Pinia possa ser usado globalmente na aplicação Vue 3. A partir daqui, já será possível criar e acessar stores de qualquer componente.
+```js
+// main.js
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'  // Importando o Pinia
+import App from './App.vue'
+
+const app = createApp(App)
+
+app.use(createPinia())  // Usando o Pinia no Vue
+app.mount('#app')
+
+```
+
+Existem várias formas de escrever uma Store Pinia, mas neste documento de aprendizado exemplificarei como a maneria mais comum.
+
+Para criar um store personalizada podemos seguir alguns passos:
+
+1. Definir a Store.
+
+O método `defineStore` é usado para definir uma store no Pinia. Você precisa dar um nome à store (por exemplo, counter), definir o estado e adicionar as ações.
+```js
+// stores/counter.js
+import { defineStore } from 'pinia'
+
+export const useCounterStore = defineStore('counter', {
+  state: () => ({
+    count: 0
+  }),
+  actions: {
+    increment() {
+      this.count++  // Aumenta o valor do contador
+    },
+    decrement() {
+      this.count--  // Diminui o valor do contador
+    }
+  }
+})
+```
+- `state`: É um método que retorna o estado da store. No exemplo, temos uma propriedade count que guarda o número.
+
+- `actions`: São funções que manipulam o estado. No exemplo, temos duas ações, increment e decrement, para aumentar e diminuir o valor de count.
+
+2. Consumindo a Store no Componente.
+Agora que temos nossa store configurada, podemos consumi-la em qualquer componente Vue. Você pode acessar o estado e chamar as ações dentro dos componentes.
+```js
+<template>
+  <div>
+    <p>Contador: {{ counter.count }}</p>
+    <button @click="counter.increment">Incrementar</button>
+    <button @click="counter.decrement">Decrementar</button>
+  </div>
+</template>
+
+<script setup>
+import { useCounterStore } from './stores/counter'  // Importando a store
+
+const counter = useCounterStore()  // Obtendo a instância da store
+</script>
+```
+
+- `useCounterStore`: Este é o método para acessar a store que você criou. Ele retorna a store inteira, incluindo o estado e as ações.
+
+- `counter.count`: Acessamos o estado diretamente no template, e como o Pinia é reativo, qualquer mudança no count será refletida automaticamente na interface.

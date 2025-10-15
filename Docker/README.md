@@ -142,3 +142,20 @@ RUN npm install           # Camada 4 - instala dependências
 EXPOSE 8080               # Camada 5 - expõe a porta 8080
 CMD ["node", "server.js"] # Camada 6 - comando para iniciar a aplicação
 ```
+
+## Attached/Detacched Containers
+
+
+### Attached Mode:
+
+Este é o modo padrão de execução do Docker, o que significa que, caso você não adicione nenhum parâmetro específico, o container será executado em Attached Mode.
+
+Enquanto o container estiver em execução, você poderá visualizar tudo o que está acontecendo no console, incluindo o output da aplicação, os logs do container e até mesmo as mensagens do próprio processo em execução. Ou seja, o terminal fica "preso" à execução do container.
+
+Além disso, é possível interagir com o console enquanto ele está rodando, ou seja, você pode inserir comandos diretamente no terminal do container.
+
+### Detached Mode:
+
+Para executar o container em "Detached Mode", é necessário inserir a flag `-d`, conforme no exemplo: `docker run -d my-image`
+
+Neste modo, o Docker executa o container em segundo plano. O container roda "nos bastidores", e o terminal fica disponível para outras tarefas, já que o terminal não fica "preso" ao processo do container.

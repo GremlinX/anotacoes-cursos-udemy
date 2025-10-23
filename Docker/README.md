@@ -145,7 +145,6 @@ CMD ["node", "server.js"] # Camada 6 - comando para iniciar a aplicação
 
 ## Attached/Detacched Containers
 
-
 ### Attached Mode:
 
 Este é o modo padrão de execução do Docker, o que significa que, caso você não adicione nenhum parâmetro específico, o container será executado em Attached Mode.
@@ -159,3 +158,19 @@ Além disso, é possível interagir com o console enquanto ele está rodando, ou
 Para executar o container em "Detached Mode", é necessário inserir a flag `-d`, conforme no exemplo: `docker run -d my-image`
 
 Neste modo, o Docker executa o container em segundo plano. O container roda "nos bastidores", e o terminal fica disponível para outras tarefas, já que o terminal não fica "preso" ao processo do container.
+
+
+## Interação (-it)
+
+- Ao criar ou executar containers Docker, o parâmetro `-it` é usado para habilitar a interação com o terminal dentro do container. Esse comando é uma combinação de duas opções:
+  
+| Parâmetro | Significado   | Função                                                                                                                |
+| --------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `-i`      | *interactive* | Mantém o **stdin** (entrada padrão) aberto, permitindo enviar comandos ao container.                                  |
+| `-t`      | *tty*         | Aloca um **pseudo-terminal**, simulando um terminal real, o que melhora a exibição da saída (cores, formatação, etc). |
+
+- Em conjunto, eles permitem que você interaja diretamente com o container, como se estivesse dentro do seu terminal.
+- Use `-it` sempre que precisar interagir manualmente com o container, por exemplo:
+  1. Acessar uma shell para depuração;
+  2. Testar comandos dentro do container;
+  3. Executar scripts de forma interativa.

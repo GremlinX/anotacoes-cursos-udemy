@@ -174,3 +174,14 @@ Neste modo, o Docker executa o container em segundo plano. O container roda "nos
   1. Acessar uma shell para depuração;
   2. Testar comandos dentro do container;
   3. Executar scripts de forma interativa.
+
+## Remover Container/Imagem
+
+1. Containers:
+  - Para remover um container basta usar o comando `docker rm nome_do_container`, é possível passar uma listagem de nomes de containers caso necessário. 
+  - Importante ressaltar que containers em execução não podem ser excluídos. Ou é possível forçar a remoção com docker rm `-f` nome_do_container.
+  - Um container pode ser removido automaticamente ao finalizar sua execução, sem precisar usar docker rm manualmente. Isso é feito ao criar o container com a flag --rm no comando docker run, por exemplo: `docker run --rm nome_da_imagem`.
+
+2. Imagens:
+  - No caso de imagens o comando é `docker rmi nome_da_imagem` (atenção para o "i" em "rmi").
+  - O Docker não permite remover imagens que estão sendo usadas por containers, independentemente de estarem em execução ou não. É necessário remover os containers que as utilizam antes.

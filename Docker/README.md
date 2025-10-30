@@ -185,3 +185,24 @@ Neste modo, o Docker executa o container em segundo plano. O container roda "nos
 2. Imagens:
   - No caso de imagens o comando é `docker rmi nome_da_imagem` (atenção para o "i" em "rmi").
   - O Docker não permite remover imagens que estão sendo usadas por containers, independentemente de estarem em execução ou não. É necessário remover os containers que as utilizam antes.
+
+## Copiar Arquivos
+
+O Docker possui um comando que permite copiar arquivos entre o host (máquina local) e um container. Esse comando é o `docker cp`. 
+
+A sintaxe é `docker cp [opções] origem destion`.
+
+Esse comando pode ser útil para situações como:
+
+- Copiar arquivos de configuração de um servidor web;
+- Transferir backups de banco de dados;
+- Recuperar logs de um container.
+
+Exemplo:
+```bash
+# 1. Copiar um arquivo do host para dentro do container
+docker cp ./meu_arquivo.txt nome_do_container:/caminho/no/container/
+
+# 2. Copiar um arquivo de dentro do container para o host
+docker cp nome_do_container:/caminho/no/container/meu_arquivo.txt ./meu_arquivo_local.txt
+```
